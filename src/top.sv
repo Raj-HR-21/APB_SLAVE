@@ -24,7 +24,7 @@ module top;
 		PRESETn = 0;
 		#10;
 		PRESETn = 1;
-		#1000;
+		#20000;
 		PRESETn = 0;
 		#95;
 		PRESETn = 1;
@@ -34,9 +34,21 @@ module top;
 
 	initial begin
 		uvm_config_db#(virtual apb_slv_intf)::set(null, "*", "vif", intf);
-		run_test("invalid_addr_test");
+
+	//	run_test("write_test");
+	//	run_test("read_test");
+	//	run_test("random_write_read_test");
 	//	run_test("write_then_read_test");
-	//	run_test("regression_test");
+	//	run_test("write_then_read_test2");
+	//	run_test("back_to_back_test");
+	//	run_test("write_partial_bytes_test");
+	//	run_test("overwrite_with_strb_test");
+	//	run_test("no_pstrb_test");
+	//	run_test("byte_wise_write_test");
+	//	run_test("invalid_addr_test");
+
+		run_test("regression_test");
+
 	end
 endmodule
 

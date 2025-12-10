@@ -21,6 +21,9 @@ interface apb_slv_intf(input bit PCLK, input bit PRESETn);
 		input PRESETn, PENABLE, PSEL, PWRITE, PWDATA, PADDR, PSTRB;
 		input PSLVERR, PREADY, PRDATA;
 	endclocking 
-	
+
+	modport drv_mp(clocking drv_cb, input PCLK, input PRESETn);
+	modport mon_mp(clocking mon_cb, input PCLK, input PRESETn);
+
 endinterface: apb_slv_intf
 

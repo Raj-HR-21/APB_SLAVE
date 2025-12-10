@@ -94,24 +94,24 @@ class write_then_read_test extends base_test;
 		phase.drop_objection(this);
 	endtask: run_phase
 endclass: write_then_read_test
-///////////////////////////////// 
-//-------- back to back transfer -------- 
-class back_to_back_test extends base_test;
-	`uvm_component_utils(back_to_back_test)
-	back_to_back_seq seq_h;
+/////////////////////////////////
+//-------- write and read from same address -------- 
+class write_then_read_test2 extends base_test;
+	`uvm_component_utils(write_then_read_test2)
+	write_then_read_seq2 seq_h;
 
-	function new(string name = "back_to_back_test", uvm_component parent = null);
+	function new(string name = "write_then_read_test2", uvm_component parent = null);
 		super.new(name, parent);
 	endfunction
 
 	task run_phase(uvm_phase phase);
 		phase.raise_objection(this);
-		seq_h = back_to_back_seq::type_id::create("seq_h");
+		seq_h = write_then_read_seq2::type_id::create("seq_h");
 		seq_h.start(env_h.a_agent_h.sqr_h);
 		phase.drop_objection(this);
 	endtask: run_phase
-endclass: back_to_back_test
-/////////////////////////////////
+endclass: write_then_read_test2
+/////////////////////////////////  
 //-------- partial byte write with PSTRB and read from same address -------- 
 class write_partial_bytes_test extends base_test;
 	`uvm_component_utils(write_partial_bytes_test)

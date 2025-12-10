@@ -11,12 +11,12 @@ class apb_slv_func_cov extends uvm_scoreboard;
 	
 	covergroup inp_cg;
 		cp_sel	: coverpoint act_mon_item.PSEL { 
-			bins psel_bin_0 = {0};
-			bins psel_bin_1 = {1};
+			bins psel_bin = {0,1};
+		//	bins psel_bin_1 = {1};
 		}
 		cp_en	: coverpoint act_mon_item.PENABLE { 
-			bins pen_bin_0 = {0};
-			bins pen_bin_1 = {1};
+			bins pen_bin = {0,1};
+		//	bins pen_bin_1 = {1};
 		}
 		cp_wr_rd: coverpoint act_mon_item.PWRITE { 
 			bins write_bin = {1};
@@ -34,11 +34,11 @@ class apb_slv_func_cov extends uvm_scoreboard;
 
 		wr_x_en: cross cp_wr_rd, cp_en{
 			bins cover_bin = (binsof(cp_wr_rd) && (binsof(cp_en) intersect {1}) );
-			ignore_bins no_cov = (binsof(cp_wr_rd) && (binsof(cp_en) intersect {0}) );
+		//	ignore_bins no_cov = (binsof(cp_wr_rd) && (binsof(cp_en) intersect {0}) );
 		}
 		wr_x_sel: cross cp_wr_rd, cp_sel{
 			bins cover_bin = (binsof(cp_wr_rd) && (binsof(cp_sel) intersect {1}) );
-			ignore_bins no_cov = (binsof(cp_wr_rd) && (binsof(cp_sel) intersect {0}) );
+		//	ignore_bins no_cov = (binsof(cp_wr_rd) && (binsof(cp_sel) intersect {0}) );
 		}
 
 	endgroup

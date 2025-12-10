@@ -23,16 +23,16 @@ class apb_slv_active_monitor extends uvm_monitor;
 			in_item = apb_slv_seq_item::type_id::create("in_item");
 			//repeat(1)@(vif.mon_cb);
 			wait(vif.mon_cb.PSEL && vif.mon_cb.PENABLE && vif.mon_cb.PREADY);
-			in_item.PSEL 	= vif.PSEL;
-			in_item.PENABLE = vif.PENABLE;
-			in_item.PWRITE  = vif.PWRITE;
-			in_item.PADDR   = vif.PADDR;
-			in_item.PWDATA  = vif.PWDATA;
-			in_item.PSTRB   = vif.PSTRB;
+			in_item.PSEL 	= vif.mon_cb.PSEL;
+			in_item.PENABLE = vif.mon_cb.PENABLE;
+			in_item.PWRITE  = vif.mon_cb.PWRITE;
+			in_item.PADDR   = vif.mon_cb.PADDR;
+			in_item.PWDATA  = vif.mon_cb.PWDATA;
+			in_item.PSTRB   = vif.mon_cb.PSTRB;
 
 			`uvm_info("ACT-MON ", $sformatf("\nPENABLE = %0d | PSEL = %0d | PWRITE = %0d | PSTRB = %b | PWDATA = %h | PADDR = %0d\n", in_item.PENABLE, in_item.PSEL, in_item.PWRITE, in_item.PSTRB, in_item.PWDATA, in_item.PADDR), UVM_LOW)
 			a_mon_port.write(in_item);
-			repeat(1)@(vif.mon_cb);
+			repeat(2)@(vif.mon_cb);
 		end
 	endtask: run_phase
 
@@ -63,12 +63,12 @@ class apb_slv_passive_monitor extends uvm_monitor;
 			out_item = apb_slv_seq_item::type_id::create("out_item");
 			wait(vif.mon_cb.PSEL && vif.mon_cb.PENABLE && vif.mon_cb.PREADY );
 			//repeat(1)@(vif.mon_cb);
-			out_item.PSLVERR = vif.PSLVERR;
-			out_item.PRDATA  = vif.PRDATA;
-			out_item.PREADY  = vif.PREADY;
+			out_item.PSLVERR = vif.mon_cb.PSLVERR;
+			out_item.PRDATA  = vif.mon_cb.PRDATA;
+			out_item.PREADY  = vif.mon_cb.PREADY;
 			`uvm_info("PAS-MON", $sformatf("\nPREADY = %0d | PRDATA = %h | PSLVERR = %0d\n", out_item.PREADY, out_item.PRDATA, out_item.PSLVERR), UVM_LOW)
 			p_mon_port.write(out_item);
-			repeat(1)@(vif.mon_cb);
+			repeat(2)@(vif.mon_cb);
 		end
 	endtask: run_phase
 

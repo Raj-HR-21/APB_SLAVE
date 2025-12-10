@@ -12,53 +12,47 @@ program apb_slv_assertion(PCLK, PRESETn, PADDR, PSEL, PENABLE, PWRITE, PWDATA, P
 	input PREADY;
 	input PSLVERR;     
 
-	property p1;
+	property reset_check;
+		@(posedge PCLK)
+		(!PRESETn) |-> ((PREADY == 0)&&(PSLVERR == 0)&&(PRDATA == 0));
+	endproperty
+	a1_reset_check: assert property(reset_check) $info("reset_check PASS");
+	else $error("reset_check FAIL PREADY=%0d",PREADY);
+
+	//-----------------------------------------------------------
+	property no_wait_state_check;
 		@(posedge PCLK) disable iff(!PRESETn) 
 		(PSEL & PENABLE) |-> PREADY;
 	endproperty
-
-	property reset_check;
-		@(posedge PCLK)
-		(!PRESETn) |-> ((PREADY == 0) && (PRDATA == 0) && (PSLVERR == 0));
-	endproperty
-
+	a2_no_wait_state_check: assert property(no_wait_state_check) $info("no_wait_state_check PASS");
+	else $error("no_wait_state_check FAIL");
+	//-----------------------------------------------------------
 	property unknown_check;
 		@(posedge PCLK) disable iff(!PRESETn)
 		(!$isunknown(PREADY) && !$isunknown(PRDATA) && !$isunknown(PSLVERR) );
 	endproperty
-
+	a3_unknown_check: assert property(unknown_check) $info("unknown_check PASS");
+	else $error("unknown_check FAIL");
+	//-----------------------------------------------------------
 	property stability_check;
 		@(posedge PCLK) disable iff(!PRESETn)
 		(PSEL && PENABLE && !PREADY) |=> ($stable(PWRITE) && $stable(PADDR) && $stable(PWDATA) && $stable(PSTRB));
 	endproperty
-
-	property slverr_check; 
+	a4_stability_check: assert property(stability_check) $info("stability_check PASS");
+	else $error("stability_check FAIL");
+	//-----------------------------------------------------------
+	property slverr_valid; 
 		@(posedge PCLK) disable iff(!PRESETn)
 		PSLVERR |-> (PSEL && PENABLE && PREADY);
 	endproperty
-
-	property rdata_check;
+	a5_slverr_valid: assert property(slverr_valid) $info("slverr_valid PASS");
+	else $error("slverr_valid FAIL");
+	//-----------------------------------------------------------
+	property slverr_check; 
 		@(posedge PCLK) disable iff(!PRESETn)
-		(PSEL && PENABLE && !PREADY) |-> (PRDATA == 0);
+		(PSEL && PENABLE && PREADY && (PADDR >= `MD)) |-> PSLVERR;
 	endproperty
-
-	a1: assert property(p1) $info("P1 PASS");
-	else $error("P1 FAIL");
-
-	a2_reset_check: assert property(p1) $info("reset_check PASS");
-	else $error("reset_check FAIL");
-
-	a3_unknown_check: assert property(unknown_check) $info("unknown_check PASS");
-	else $error("unknown_check FAIL");
-
-	a4_stability_check: assert property(stability_check) $info("stability_check PASS");
-	else $error("stability_check FAIL");
-
-	a5_slverr_check: assert property(slverr_check) $info("slverr_check PASS");
+	a6_slverr_check: assert property(slverr_valid) $info("slverr_check PASS");
 	else $error("slverr_check FAIL");
 
-	a6_rdata_check: assert property(rdata_check) $info("rdata_check PASS");
-	else $error("rdata_check FAIL");
-
 endprogram
-

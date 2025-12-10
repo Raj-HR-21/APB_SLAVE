@@ -23,32 +23,17 @@ class apb_slv_driver extends uvm_driver#(apb_slv_seq_item);
 	endtask: run_phase
 
 	task drive_task();
-		// IDLE
-		vif.drv_cb.PSEL    <= 0;
-		vif.drv_cb.PENABLE <= 0;
-		$display("[%5t] ================================================================================================== ", $time);
-		// SETUP PHASE
-		@(vif.drv_cb);
-		//$display($time,"  ----------------setup-----------------------------");
-		vif.drv_cb.PSEL    <= 1;
-		vif.drv_cb.PENABLE <= 0;
+		$display("[%5t] ====DRV============================================================================================== ", $time);
+		vif.drv_cb.PSEL	   <= req.PSEL;
+		vif.drv_cb.PENABLE <= req.PENABLE;
 		vif.drv_cb.PWRITE  <= req.PWRITE;
+		vif.drv_cb.PWDATA  <= req.PWDATA;
+		vif.drv_cb.PSTRB   <= req.PSTRB;
 		vif.drv_cb.PADDR   <= req.PADDR;
-		vif.drv_cb.PWDATA  <= (req.PWRITE) ? req.PWDATA : 0;
-		vif.drv_cb.PSTRB   <= (req.PWRITE) ? req.PSTRB : 0;
+
 		
-		// ACCESS PHASE
-		@(vif.drv_cb);
-		//$display($time,"  ----------------access-----------------------------");
-		vif.drv_cb.PSEL    <= 1;
-		vif.drv_cb.PENABLE <= 1;
-
-		`uvm_info("DRV", $sformatf("\nPWRITE = %0d | PSTRB = %b | PWDATA = %h | PADDR = %0d \n", req.PWRITE, req.PSTRB, req.PWDATA, req.PADDR), UVM_LOW)
-
-		//while(!vif.drv_cb.PREADY) 
-		@(vif.drv_cb);
+		`uvm_info("DRV", $sformatf("\nPSEL=%0d | PENABLE=%0d | PWRITE = %0d | PSTRB = %b | PWDATA = %h | PADDR = %0d \n", req.PSEL, req.PENABLE, req.PWRITE, req.PSTRB, req.PWDATA, req.PADDR), UVM_MEDIUM)
+		repeat(2) @(vif.drv_cb);
 	endtask: drive_task
-
-
 endclass: apb_slv_driver
 
